@@ -17,7 +17,7 @@ class Point(object):
         else:
             self.eventType = "Track"
     def toString(self):
-        return "dec " + str(self.dec) + " err " + str(self.err) + " type " + self.eventType
+        return "dec " + str(self.dec) + " ra " + str(self.ra) + " err " + str(self.err) + " type " + self.eventType
 
 out = open("output.txt", "w")
 data = open('/Users/Patron/Documents/upgoing_events.txt', "r+")
