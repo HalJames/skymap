@@ -1,14 +1,15 @@
-#this converts release data files from telescopes into a text file, output.txt
-#replace code on line 14 to change input file
+#this converts release data files from IceCube into a text file, output.txt
+#replace code on line 15 to change input file
 
 class Point(object):
-    def __init__(self, dec, ra, err, type_of):
+    def __init__(self, dec, ra, err, type_of, energy):
         self.err = err
         self.ra = ra
         self.dec = dec
         self.type = type_of
+        self.energy = energy
     def toString(self):
-        return "dec " + str(self.dec) + " ra " + str(self.ra) + " err " + str(self.err) + " type " + str(self.type) + " Neutrino"
+        return "dec " + str(self.dec) + " ra " + str(self.ra) + " err " + str(self.err) + " type " + str(self.type) + " kind " + "Neutrino" + " energy " + str(self.energy)
 
 out = open("output.txt", "w")
 data = open('/Users/Patron/Documents/Observation_of_Astrophysical_Neutrinos_in_Four_Years_of_IceCube_Data_edited.txt', "r+")
@@ -17,7 +18,7 @@ datalist = data.readlines()
 
 firstwords = firstline.lower().split()
 
-words_index = {"dec":-1, "ra":-1, "err": -1, "type":-1}
+words_index = {"dec":-1, "ra":-1, "err": -1, "type":-1, "energy":-1}
 
 for item in firstwords:
     if item == "declination" or item == "dec":
@@ -28,6 +29,8 @@ for item in firstwords:
         words_index["err"] = firstwords.index(item)
     if item == "event type" or item == "topology" or item == "type":
         words_index["type"] = firstwords.index(item)
+    if item == "energy":
+        words_index["energy"] = firstwords.index(item)
 
 otherlines = []
 for line in datalist:
@@ -37,17 +40,17 @@ for m in range(len(otherlines)):
     n = m - 1
     if words_index["err"] == -1:
         out.write(Point(otherlines[n][words_index["dec"]],
-        otherlines[n][words_index["ra"]], 0, otherlines[n][words_index["type"]]).toString() + "\n")
+        otherlines[n][words_index["ra"]], 0, otherlines[n][words_index["type"]],otherlines[n][words_index["energy"]]).toString() + "\n")
     elif words_index["type"] == -1:
         out.write(Point(otherlines[n][words_index["dec"]], 
-        otherlines[n][words_index["ra"]],otherlines[n][words_index["err"]], 0).toString() + "\n")
+        otherlines[n][words_index["ra"]],otherlines[n][words_index["err"]], 0,otherlines[n][words_index["energy"]]).toString() + "\n")
     elif words_index["type"] == -1 and words_index["err"] == -1:
         out.write(Point(otherlines[n][words_index["dec"]], 
-        otherlines[n][words_index["ra"]],0,0).toString() + "\n")
+        otherlines[n][words_index["ra"]],0,0,otherlines[n][words_index["energy"]]).toString() + "\n")
     else:
         out.write(Point(otherlines[n][words_index["dec"]], 
         otherlines[n][words_index["ra"]], otherlines[n][words_index["err"]],
-        otherlines[n][words_index["type"]]).toString() + "\n")  
-
+        otherlines[n][words_index["type"]],otherlines[n][words_index["energy"]]).toString() + "\n") 
+ 
 data.close()
 out.close()       
